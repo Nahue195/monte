@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Archivo, Archivo_Black } from "next/font/google";
 import "../globals.css";
+import { CartDrawer } from "@/components/cart/CartDrawer";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -53,6 +54,7 @@ export default async function LangLayout({ children, params }: LayoutProps<"/[la
             {children}
           </main>
           <Footer lang={lang} footer={dict.footer} />
+          <CartDrawer lang={lang} dict={{ cart: dict.cart, labels: dict.labels }} />
         </CartProvider>
       </body>
     </html>
