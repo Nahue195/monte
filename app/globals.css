@@ -1,0 +1,190 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #17110d;
+  --panel: #221a14;
+  --line: #3d2e25;
+  --ink: #f3e9dc;
+  --muted: #b9a898;
+  --hot: #ff6a2b;
+  --cream: #efe4d3;
+  --cocoa: #5c4a3d;
+  --ok: #7fd18b;
+  --bad: #f0907f;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-hot: var(--hot);
+  --color-cream: var(--cream);
+  --color-cocoa: var(--cocoa);
+  --color-ok: var(--ok);
+  --color-bad: var(--bad);
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo-black), var(--font-archivo), ui-sans-serif, sans-serif;
+  --animate-rise: rise 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+html,
+body {
+  background: var(--bg);
+}
+
+body {
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--hot);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 50;
+  background: var(--hot);
+  color: var(--bg);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 2.75rem;
+    padding: 0 1.25rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: background-color 150ms, color 150ms, opacity 150ms, transform 150ms;
+  }
+  .btn:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-hot {
+    background: var(--hot);
+    color: var(--bg);
+  }
+  .btn-hot:hover:not(:disabled) {
+    background: color-mix(in oklab, var(--hot) 85%, white);
+  }
+  .btn-ghost {
+    border: 1px solid var(--line);
+    color: var(--ink);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background: var(--panel);
+  }
+  .field {
+    width: 100%;
+    height: 2.75rem;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--ink);
+    border-radius: 0.75rem;
+    padding: 0 0.875rem;
+    font-size: 1rem;
+  }
+  .field::placeholder {
+    color: var(--muted);
+  }
+  .field[aria-invalid="true"] {
+    border-color: var(--bad);
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.25rem;
+    padding: 0.25rem 0.875rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    color: var(--muted);
+    transition: background-color 150ms, color 150ms, border-color 150ms;
+  }
+  .chip:hover {
+    color: var(--ink);
+    border-color: var(--muted);
+  }
+  .chip[aria-pressed="true"] {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bg);
+  }
+}
+
+/* Coffee bag drawn in CSS: color from the coffee, serrated top edge. */
+.bag {
+  position: relative;
+  overflow: hidden;
+}
+.bag::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 14px;
+  background: repeating-linear-gradient(90deg, rgb(0 0 0 / 0.18) 0 4px, transparent 4px 8px);
+}
+
+/* Cart: full screen on phones, side panel from md up. */
+dialog::backdrop {
+  background: rgb(0 0 0 / 0.6);
+}
+.sheet {
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  border: 0;
+}
+@media (min-width: 768px) {
+  .sheet {
+    margin: 0 0 0 auto;
+    width: 26rem;
+    border-left: 1px solid var(--line);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  dialog[open].sheet {
+    animation: sheet-in 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
