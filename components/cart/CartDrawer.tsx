@@ -15,7 +15,7 @@ import { cartActions, useCartLines } from "./store";
 type Props = { lang: Locale; dict: Pick<Dictionary, "cart" | "labels"> };
 
 export function CartDrawer({ lang, dict }: Props) {
-  const { isOpen, closeCart } = useCartUi();
+  const { isOpen, closeCart, message } = useCartUi();
   const priced = priceCart(useCartLines(), COFFEES);
   const { cart, labels } = dict;
   const price = (n: number) => formatPrice(n, lang);
@@ -28,6 +28,10 @@ export function CartDrawer({ lang, dict }: Props) {
           <h2 id="cart-title" className="font-display text-xl uppercase">
             {cart.title}
           </h2>
+          {/* The provider's own live region sits outside the modal dialog, which is inert while open. */}
+          <p role="status" aria-live="polite" className="sr-only">
+            {isOpen ? message : ""}
+          </p>
           <button
             type="button"
             onClick={closeCart}

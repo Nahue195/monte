@@ -8,7 +8,7 @@ type Props = { lang: Locale; dict: Dictionary["search"] };
 
 export function SearchBox({ lang, dict }: Props) {
   return (
-    <Form action={`/${lang}/shop`} role="search" className="flex items-center gap-2 rounded-full border border-line bg-panel py-1.5 pl-4 pr-1.5">
+    <Form action={`/${lang}/shop`} role="search" className="flex items-center gap-2 rounded-full border border-field-line bg-panel focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-hot py-1.5 pl-4 pr-1.5">
       <Search size={18} aria-hidden className="shrink-0 text-muted" />
       <label htmlFor="home-q" className="sr-only">
         {dict.label}

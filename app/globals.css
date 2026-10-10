@@ -4,6 +4,7 @@
   --bg: #17110d;
   --panel: #221a14;
   --line: #3d2e25;
+  --field-line: #7a6656;
   --ink: #f3e9dc;
   --muted: #b9a898;
   --hot: #ff6a2b;
@@ -18,6 +19,7 @@
   --color-bg: var(--bg);
   --color-panel: var(--panel);
   --color-line: var(--line);
+  --color-field-line: var(--field-line);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-hot: var(--hot);
@@ -105,7 +107,7 @@ body {
   .field {
     width: 100%;
     height: 2.75rem;
-    border: 1px solid var(--line);
+    border: 1px solid var(--field-line);
     background: var(--panel);
     color: var(--ink);
     border-radius: 0.75rem;
@@ -123,7 +125,7 @@ body {
     align-items: center;
     min-height: 2.25rem;
     padding: 0.25rem 0.875rem;
-    border: 1px solid var(--line);
+    border: 1px solid var(--field-line);
     border-radius: 999px;
     font-size: 0.8125rem;
     color: var(--muted);

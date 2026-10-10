@@ -34,3 +34,17 @@ test("todos los pares de texto pasan AA", () => {
     assert.ok(ratio >= 4.5, `${fg} sobre ${bg}: ${ratio.toFixed(2)}`);
   }
 });
+
+// Borders of form fields, search pills and chips are UI components (WCAG 1.4.11: 3:1).
+const uiPairs: [string, string][] = [
+  ["--field-line", "--bg"],
+  ["--field-line", "--panel"],
+];
+
+test("los bordes de campos y chips alcanzan 3:1", () => {
+  for (const [fg, bg] of uiPairs) {
+    assert.ok(tokens[fg] && tokens[bg], `faltan ${fg} o ${bg}`);
+    const ratio = contrastRatio(tokens[fg], tokens[bg]);
+    assert.ok(ratio >= 3, `${fg} sobre ${bg}: ${ratio.toFixed(2)}`);
+  }
+});

@@ -7,6 +7,7 @@ type CartUi = {
   openCart: () => void;
   closeCart: () => void;
   announce: (message: string) => void;
+  message: string;
 };
 
 const CartUiContext = createContext<CartUi | null>(null);
@@ -18,7 +19,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const closeCart = useCallback(() => setOpen(false), []);
   // Screen readers skip a repeated identical message, so alternate a trailing no-break space.
   const announce = useCallback((text: string) => setMessage((prev) => (prev === text ? `${text} ` : text)), []);
-  const value = useMemo(() => ({ isOpen, openCart, closeCart, announce }), [isOpen, openCart, closeCart, announce]);
+  const value = useMemo(() => ({ isOpen, openCart, closeCart, announce, message }), [isOpen, openCart, closeCart, announce, message]);
 
   return (
     <CartUiContext.Provider value={value}>

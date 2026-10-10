@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
 import { COFFEES } from "@/data/coffees";
@@ -23,6 +23,7 @@ export function ShopView({ lang, dict }: Props) {
   const params = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const inputRef = useRef<HTMLInputElement>(null);
   const [text, setText] = useState(() => params.get("q") ?? "");
   const method = asMethod(params.get("m"));
   const roast = asRoast(params.get("r"));
@@ -61,9 +62,10 @@ export function ShopView({ lang, dict }: Props) {
 
   return (
     <div>
-      <div role="search" className="flex items-center gap-2 rounded-full border border-line bg-panel py-1.5 pl-4 pr-1.5">
+      <div role="search" className="flex items-center gap-2 rounded-full border border-field-line bg-panel focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-hot py-1.5 pl-4 pr-1.5">
         <Search size={18} aria-hidden className="shrink-0 text-muted" />
         <input
+          ref={inputRef}
           type="search"
           value={text}
           onChange={(e) => setText(e.target.value.slice(0, MAX_QUERY_LENGTH))}
@@ -76,7 +78,10 @@ export function ShopView({ lang, dict }: Props) {
         {text && (
           <button
             type="button"
-            onClick={() => setText("")}
+            onClick={() => {
+              setText("");
+              inputRef.current?.focus();
+            }}
             aria-label={dict.search.clear}
             className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-muted hover:text-ink"
           >

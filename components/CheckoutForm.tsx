@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useState, type ChangeEvent, type FormEvent, type InputHTMLAttributes } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent, type InputHTMLAttributes } from "react";
 import { COFFEES } from "@/data/coffees";
 import type { Dictionary } from "@/dictionaries";
 import { priceCart, type Delivery, type PricedCart } from "@/lib/cart";
@@ -50,6 +50,13 @@ export function CheckoutForm({ lang, dict }: Props) {
   const [attempted, setAttempted] = useState(false);
   const [frozen, setFrozen] = useState<PricedCart | null>(null);
   const busy = useRef(false);
+  const mounted = useRef(false);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
   const { checkout, labels, cart } = dict;
   const price = (n: number) => formatPrice(n, lang);
 
@@ -87,7 +94,11 @@ export function CheckoutForm({ lang, dict }: Props) {
     if (errors[field]) recheck(field, next);
   };
 
-  const onDelivery = (delivery: Delivery) => setForm((prev) => ({ ...prev, delivery }));
+  const onDelivery = (delivery: Delivery) => {
+    setForm((prev) => ({ ...prev, delivery }));
+    // Pickup hides the address fields, so their errors must not keep the summary alive.
+    if (delivery === "retiro") setErrors((prev) => ({ ...prev, name: undefined, address: undefined, city: undefined, province: undefined, zip: undefined }));
+  };
 
   const fieldProps = (field: Field) => ({
     id: field,
@@ -109,10 +120,13 @@ export function CheckoutForm({ lang, dict }: Props) {
       document.getElementById(`f-${first}`)?.focus();
       return;
     }
-    busy.current = true;
     const snapshot = priceCart(cartStore.get(), COFFEES, form.delivery);
+    // The cart may have been cleared in another tab since this page rendered.
+    if (snapshot.lines.length === 0) return;
+    busy.current = true;
     setFrozen(snapshot);
     await new Promise((resolve) => setTimeout(resolve, PROCESSING_MS));
+    if (!mounted.current) return;
     orderStore.set(buildOrder(snapshot, form.delivery, makeOrderId(), localToday()));
     cartActions.clear();
     router.push(`/${lang}/order`);
@@ -182,10 +196,10 @@ export function CheckoutForm({ lang, dict }: Props) {
 
         <fieldset className="grid gap-4">
           <legend className="mb-2 font-display text-xl uppercase">{checkout.payment}</legend>
-          <TextField {...fieldProps("card")} inputMode="numeric" autoComplete="cc-number" placeholder="4242 4242 4242 4242" />
+          <TextField {...fieldProps("card")} inputMode="numeric" autoComplete="off" placeholder="4242 4242 4242 4242" />
           <div className="grid grid-cols-2 gap-4">
-            <TextField {...fieldProps("expiry")} inputMode="numeric" autoComplete="cc-exp" placeholder="12/30" />
-            <TextField {...fieldProps("cvv")} inputMode="numeric" autoComplete="cc-csc" placeholder="123" />
+            <TextField {...fieldProps("expiry")} inputMode="numeric" autoComplete="off" placeholder="12/30" />
+            <TextField {...fieldProps("cvv")} inputMode="numeric" autoComplete="off" placeholder="123" />
           </div>
         </fieldset>
 
