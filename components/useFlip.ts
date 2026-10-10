@@ -5,13 +5,15 @@ import { useLayoutEffect, useRef } from "react";
 // FLIP: when the order of `keys` changes, each element glides from its old spot.
 export function useFlip(keys: string[]) {
   const nodes = useRef(new Map<string, HTMLElement>());
-  const rects = useRef(new Map<string, DOMRect>());
+  // Page coordinates (not viewport), so scrolling between changes is not mistaken for movement.
+  const rects = useRef(new Map<string, { left: number; top: number }>());
   const signature = keys.join("|");
 
   useLayoutEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     for (const [key, el] of nodes.current) {
-      const next = el.getBoundingClientRect();
+      const box = el.getBoundingClientRect();
+      const next = { left: box.left + window.scrollX, top: box.top + window.scrollY };
       const prev = rects.current.get(key);
       if (prev && !reduce) {
         const dx = prev.left - next.left;
