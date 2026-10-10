@@ -41,6 +41,8 @@ export const LEXICON: Entry[] = [
   { term: { kind: "origin", value: ["guatemala", "costa rica", "honduras"] }, phrases: ["centroamerica", "centroamericano", "central america", "central american"] },
   // Decaf ("sin cafeina" is a two-word phrase, so it wins over the negation "sin")
   { term: { kind: "decaf" }, phrases: ["descafeinado", "descafeinada", "descafe", "sin cafeina", "decaf", "decaffeinated"] },
+  // Quantities that must not be read as a roast ("medio kilo"); recognized but they apply nothing.
+  { term: { kind: "ignore" }, phrases: ["medio kilo", "medio kg", "1 2 kilo", "1 2 kg", "half kilo", "half a kilo", "half kg"] },
   // Price
   { term: { kind: "cheap" }, phrases: ["barato", "barata", "economico", "economica", "accesible", "cheap", "affordable"] },
   { term: { kind: "price-cue" }, phrases: ["menos de", "hasta", "debajo de", "por debajo de", "maximo", "max", "under", "below", "less than", "up to"] },
@@ -52,5 +54,7 @@ export const STOPWORDS = new Set([
   "con", "muy", "pero", "como", "cafe", "cafes", "uno", "una", "unos", "mas", "menos", "sea", "este", "esta",
   "tipo", "nada", "poco", "poca", "bien", "super", "sin", "mucho", "todo", "todos", "leche", "taza", "bueno",
   "buena", "coffee", "something", "want", "like", "very", "not", "too", "really", "with", "the", "and", "for",
-  "good", "nice", "milk", "cup",
+  "good", "nice", "milk", "cup", "right", "pera", "media", "mano", "mora", "fina", "money", "better",
+  "bajo", "baja", "low", "less", "little", "demasiado", "nothing", "too", "gusta", "gustan", "odio", "hate",
+  "dislike", "anything", "want", "kilo", "half",
 ]);

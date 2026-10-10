@@ -53,3 +53,10 @@ test("orígenes y regiones", () => {
   assert.deepEqual(terms("algo africano"), [{ kind: "origin", value: ["etiopia", "kenia"] }]);
   assert.deepEqual(terms("costa rica"), [{ kind: "origin", value: ["costa rica"] }]);
 });
+
+test("palabras comunes no se corrigen a términos del léxico", () => {
+  assert.deepEqual(terms("the right one for espresso"), [{ kind: "method", value: "espresso" }]);
+  assert.deepEqual(terms("molienda media"), []);
+  assert.deepEqual(terms("pera"), []);
+  assert.deepEqual(terms("mano mora fina money better"), []);
+});

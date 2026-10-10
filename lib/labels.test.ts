@@ -28,4 +28,6 @@ test("filtros duros", () => {
   assert.equal(matchLabel({ key: { type: "exclude", value: "chocolate" }, ok: true }, huila, es.labels, "es"), "sin chocolate");
   assert.equal(plain(matchLabel({ key: { type: "price", max: 15000 }, ok: true }, huila, es.labels, "es")), "hasta $ 15.000");
   assert.equal(matchLabel({ key: { type: "decaf" }, ok: false }, huila, en.labels, "en"), "decaf");
+  assert.equal(matchLabel({ key: { type: "no-decaf" }, ok: true }, huila, es.labels, "es"), "con cafeína");
+  assert.equal(matchLabel({ key: { type: "no-decaf" }, ok: true }, huila, en.labels, "en"), "caffeinated");
 });

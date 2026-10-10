@@ -9,7 +9,5 @@ export type Filters = { method?: Method | null; roast?: Roast | null };
 
 export function search(coffees: Coffee[], text: string, filters: Filters = {}): SearchResult {
   const q = interpret(text);
-  if (filters.method && !q.methods.includes(filters.method)) q.methods.push(filters.method);
-  if (filters.roast && !q.roasts.includes(filters.roast)) q.roasts.push(filters.roast);
-  return rank(coffees, q, text.trim().length > 0);
+  return rank(coffees, q, text.trim().length > 0, filters);
 }

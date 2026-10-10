@@ -102,6 +102,7 @@ export const es = {
       honduras: "Honduras",
     },
     decaf: "descafeinado",
+    caffeinated: "con cafeína",
     upTo: "hasta {price}",
     without: "sin {note}",
   },

@@ -36,3 +36,28 @@ test("los filtros se suman a la búsqueda", () => {
 test("búsqueda vacía sin filtros devuelve todo", () => {
   assert.equal(search(COFFEES, "   ").status, "all");
 });
+
+test("el filtro de método es un filtro duro", () => {
+  const r = search(COFFEES, "frutal", { method: "espresso" });
+  assert.equal(r.status, "matched");
+  assert.ok(r.results.length > 0);
+  assert.ok(r.results.every((x) => x.coffee.methods.includes("espresso")));
+});
+
+test("roast claro + método espresso sin coincidencias da none-pass", () => {
+  assert.ok(!COFFEES.some((c) => c.roast === "claro" && c.methods.includes("espresso")));
+  const r = search(COFFEES, "", { roast: "claro", method: "espresso" });
+  assert.equal(r.status, "none-pass");
+});
+
+test("filtro tipeado + chip espresso: filtro sigue siendo suave", () => {
+  const r = search(COFFEES, "filtro", { method: "espresso" });
+  assert.ok(r.results.every((x) => x.coffee.methods.includes("espresso")));
+  assert.ok(r.results.some((x) => x.matches.some((m) => m.key.type === "method" && m.key.values.includes("filtro"))));
+});
+
+test("excludeDecaf excluye el decaf", () => {
+  const r = search(COFFEES, "no decaf");
+  assert.equal(r.status, "matched");
+  assert.ok(r.results.every((x) => !x.coffee.decaf));
+});

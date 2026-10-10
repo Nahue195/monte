@@ -104,3 +104,17 @@ test("un criterio que nadie cumple igual devuelve 3 cercanos", () => {
   assert.equal(r.results.length, 3);
   assert.ok(r.results.every((x) => x.close));
 });
+
+test("excludeDecaf es un filtro duro", () => {
+  const withDecaf = [...catalog, { ...catalog[0], slug: "zeta", name: "Zeta", decaf: true }];
+  const r = rank(withDecaf, q({ excludeDecaf: true }), true);
+  assert.equal(r.status, "matched");
+  assert.ok(r.results.every((x) => !x.coffee.decaf));
+  assert.ok(r.results[0].matches.some((m) => m.key.type === "no-decaf" && m.ok));
+});
+
+test("los filtros rápidos son duros y no se mezclan con los criterios", () => {
+  const r = rank(catalog, q({}), false, { method: "espresso" });
+  assert.deepEqual(slugs(r), ["beta", "delta"]);
+  assert.equal(r.status, "matched");
+});

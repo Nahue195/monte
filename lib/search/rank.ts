@@ -20,7 +20,8 @@ export type MatchKey =
   | { type: "level"; attr: Attr; range: Range }
   | { type: "exclude"; value: NoteTag }
   | { type: "price"; max: number }
-  | { type: "decaf" };
+  | { type: "decaf" }
+  | { type: "no-decaf" };
 
 export type Match = { key: MatchKey; ok: boolean };
 export type Result = { coffee: Coffee; score: number; matches: Match[]; close: boolean };
@@ -44,7 +45,9 @@ export function levelScore(value: number, range: Range): number {
   return distance === 1 ? 0.5 : 0;
 }
 
-function criteria(q: Query): { soft: Soft[]; hard: Hard[] } {
+export type RankFilters = { method?: Method | null; roast?: Roast | null };
+
+function criteria(q: Query, filters: RankFilters): { soft: Soft[]; hard: Hard[] } {
   const soft: Soft[] = [];
   const hard: Hard[] = [];
   if (q.notes.length) {
@@ -73,14 +76,30 @@ function criteria(q: Query): { soft: Soft[]; hard: Hard[] } {
     hard.push({ key: { type: "price", max }, pass: (c) => c.prices["250"] <= max });
   }
   if (q.decaf) hard.push({ key: { type: "decaf" }, pass: (c) => c.decaf });
+  if (q.excludeDecaf) hard.push({ key: { type: "no-decaf" }, pass: (c) => !c.decaf });
+  // Quick filters are hard. A typed criterion identical to the filter would show the same chip twice, so drop it.
+  const dropSoft = (type: "method" | "roast", value: string) => {
+    const i = soft.findIndex((s) => s.key.type === type && (s.key as { values: string[] }).values.length === 1 && (s.key as { values: string[] }).values[0] === value);
+    if (i >= 0) soft.splice(i, 1);
+  };
+  if (filters.method) {
+    const m = filters.method;
+    dropSoft("method", m);
+    hard.push({ key: { type: "method", values: [m] }, pass: (c) => c.methods.includes(m) });
+  }
+  if (filters.roast) {
+    const ro = filters.roast;
+    dropSoft("roast", ro);
+    hard.push({ key: { type: "roast", values: [ro] }, pass: (c) => c.roast === ro });
+  }
   return { soft, hard };
 }
 
 const byName = (a: Coffee, b: Coffee) => a.name.localeCompare(b.name, "es");
 const byScoreThenName = (a: Result, b: Result) => b.score - a.score || byName(a.coffee, b.coffee);
 
-export function rank(coffees: Coffee[], q: Query, hasText: boolean): SearchResult {
-  const { soft, hard } = criteria(q);
+export function rank(coffees: Coffee[], q: Query, hasText: boolean, filters: RankFilters = {}): SearchResult {
+  const { soft, hard } = criteria(q, filters);
 
   if (soft.length === 0 && hard.length === 0) {
     const ordered = [...coffees].sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)) || byName(a, b));

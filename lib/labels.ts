@@ -28,5 +28,7 @@ export function matchLabel(match: Match, coffee: Coffee, labels: Labels, lang: L
       return fill(labels.upTo, { price: formatPrice(key.max, lang) });
     case "decaf":
       return labels.decaf;
+    case "no-decaf":
+      return labels.caffeinated;
   }
 }

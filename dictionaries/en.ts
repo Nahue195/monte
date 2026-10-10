@@ -104,6 +104,7 @@ export const en: Dictionary = {
       honduras: "Honduras",
     },
     decaf: "decaf",
+    caffeinated: "caffeinated",
     upTo: "up to {price}",
     without: "no {note}",
   },

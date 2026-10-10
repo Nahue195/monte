@@ -7,6 +7,7 @@ export type Term =
   | { kind: "origin"; value: string[] }
   | { kind: "level"; attr: Attr; dir: "up" | "down" }
   | { kind: "decaf" }
+  | { kind: "ignore" }
   | { kind: "cheap" }
   | { kind: "price-cue" }
   | { kind: "price"; max: number };
@@ -25,5 +26,6 @@ export type Query = {
   levels: Partial<Record<Attr, Range>>;
   maxPrice?: number;
   decaf: boolean;
+  excludeDecaf: boolean;
   recognized: number;
 };

@@ -39,6 +39,34 @@ const cases: [string, Partial<Query>][] = [
   ["algo caro", {}],
   ["quiero café rico", {}],
   ["xyz", {}],
+  // S1 low modifiers
+  ["baja acidez", { levels: { acidity: { max: 2 } } }],
+  ["acidez baja", { levels: { acidity: { max: 2 } } }],
+  ["low acid", { levels: { acidity: { max: 2 } } }],
+  ["low acidity", { levels: { acidity: { max: 2 } } }],
+  ["less acidic", { levels: { acidity: { max: 2 } } }],
+  ["nothing too acidic", { levels: { acidity: { max: 3 } } }],
+  ["no demasiado ácido", { levels: { acidity: { max: 3 } } }],
+  ["cuerpo bajo", { levels: { body: { max: 2 } } }],
+  ["low body", { levels: { body: { max: 2 } } }],
+  ["dulzor bajo", { levels: { sweetness: { max: 2 } } }],
+  // S2 negation cues
+  ["no me gusta el chocolate", { excludeNotes: ["chocolate"] }],
+  ["no me gustan los cítricos", { excludeNotes: ["citrico"] }],
+  ["no quiero nada ácido", { levels: { acidity: { max: 2 } } }],
+  ["odio lo amargo", { roasts: ["claro", "medio"] }],
+  ["I don't like chocolate", { excludeNotes: ["chocolate"] }],
+  ["don't want anything acidic", { levels: { acidity: { max: 2 } } }],
+  ["no me gusta el chocolate, quiero algo frutal", { excludeNotes: ["chocolate"], notes: ["frutal"] }],
+  // S3 negated decaf
+  ["que no sea descafeinado", { excludeDecaf: true }],
+  ["not decaf", { excludeDecaf: true }],
+  ["no decaf", { excludeDecaf: true }],
+  ["sin descafeinar", { excludeDecaf: true }],
+  // S5 ignored quantities
+  ["medio kilo", {}],
+  ["1/2 kilo de chocolatoso", { notes: ["chocolate"] }],
+  ["half kilo", {}],
 ];
 
 for (const [text, partial] of cases) {
@@ -60,4 +88,9 @@ test("hasCriteria distingue consultas vacías", () => {
   assert.equal(hasCriteria(interpret("quiero café rico")), false);
   assert.equal(hasCriteria(interpret("barato")), true);
   assert.equal(hasCriteria(interpret("sin chocolate")), true);
+});
+
+test("las cantidades ignoradas no cuentan como reconocidas", () => {
+  assert.equal(interpret("medio kilo").recognized, 0);
+  assert.equal(interpret("medio kilo chocolatoso").recognized, 1);
 });
